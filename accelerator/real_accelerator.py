@@ -4,6 +4,8 @@
 # DeepSpeed Team
 import os
 
+import torch.version
+
 try:
     # Importing logger currently requires that torch is installed, hence the try...except
     # TODO: Remove logger dependency on torch.
@@ -60,11 +62,11 @@ def get_accelerator():
         accelerator_name = os.environ["DS_ACCELERATOR"]
         if accelerator_name == "xpu":
             try:
-                import intel_extension_for_pytorch as ipex
-                assert ipex._C._has_xpu(), "XPU_Accelerator requires an intel_extension_for_pytorch that supports XPU."
+                import torch
+                assert torch.version.xpu, "XPU_Accelerator requires an pytorch that supports XPU."
             except ImportError as e:
                 raise ValueError(
-                    f"XPU_Accelerator requires intel_extension_for_pytorch, which is not installed on this system.")
+                    f"XPU_Accelerator requires Pytorch>=2.4, which is not installed on this system.")
         elif accelerator_name == "xpu.external":
             try:
                 import intel_extension_for_deepspeed  # noqa: F401 # type: ignore
@@ -119,8 +121,8 @@ def get_accelerator():
             pass
         if accelerator_name is None:
             try:
-                import intel_extension_for_pytorch as ipex
-                if ipex._C._has_xpu():
+                import torch
+                if torch.version.xpu:
                     accelerator_name = "xpu"
                 else:
                     accelerator_name = "cpu"

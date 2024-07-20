@@ -5,8 +5,6 @@
 
 import torch
 from deepspeed.accelerator.abstract_accelerator import DeepSpeedAccelerator
-import intel_extension_for_pytorch as ipex  # noqa: F401 # type: ignore
-import oneccl_bindings_for_pytorch  # noqa: F401 # type: ignore
 import functools
 
 import importlib
@@ -286,10 +284,7 @@ class XPU_Accelerator(DeepSpeedAccelerator):
             return self.class_dict['NotImplementedBuilder']
 
     def build_extension(self):
-        try:
-            from intel_extension_for_pytorch.xpu.cpp_extension import DpcppBuildExtension
-        except ImportError:
-            from intel_extension_for_pytorch.xpu.utils import DpcppBuildExtension
+        from torch.utils.cpp_extension import IntelDpcppBuildExtension as DpcppBuildExtension
         return DpcppBuildExtension
 
     def export_envs(self):

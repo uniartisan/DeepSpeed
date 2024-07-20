@@ -14,7 +14,6 @@ class FlashAttentionBuilderObject():
     def flash_attn_func_v2(self, q, k, v, dropout_p, softmax_scale, is_causal):
         try:
             import torch
-            import intel_extension_for_pytorch  # noqa
             return torch.nn.functional.scaled_dot_product_attention(q,
                                                                     k,
                                                                     v,
@@ -23,7 +22,7 @@ class FlashAttentionBuilderObject():
                                                                     scale=softmax_scale)
         except ImportError:
             raise ImportError(
-                "Please install pytorch and intel_extension_for_pytorch to include scaled dot product attention.")
+                "Please install pytorch>=2.4 to include scaled dot product attention.")
 
 
 class FlashAttentionBuilder(SYCLOpBuilder):

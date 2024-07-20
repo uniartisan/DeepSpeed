@@ -19,10 +19,7 @@ except ImportError:
 class SYCLOpBuilder(OpBuilder):
 
     def builder(self):
-        try:
-            from intel_extension_for_pytorch.xpu.cpp_extension import DPCPPExtension
-        except ImportError:
-            from intel_extension_for_pytorch.xpu.utils import DPCPPExtension
+        from torch.utils.cpp_extension import DPCPPExtension
         include_dirs = [os.path.abspath(x) for x in self.strip_empty_entries(self.include_paths())]
         print("dpcpp sources = {}".format(self.sources()))
         dpcpp_ext = DPCPPExtension(name=self.absolute_name(),
@@ -92,7 +89,7 @@ class SYCLOpBuilder(OpBuilder):
             raise RuntimeError(f"Unable to JIT load the {self.name} op due to ninja not being installed.")
 
         self.jit_mode = True
-        from intel_extension_for_pytorch.xpu.cpp_extension import load
+        from torch.utils.cpp_extension import load
 
         start_build = time.time()
         # Recognize relative paths as absolute paths for jit load
